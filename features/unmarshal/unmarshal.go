@@ -530,7 +530,11 @@ func (p *unmarshal) fieldItem(field *protogen.Field, fieldname string, message *
 			p.P(`if oneof, ok := m.`, fieldname, `.(*`, field.GoIdent, `); ok {`)
 			p.decodeMessage("oneof."+field.GoName, buf, field.Message)
 			p.P(`} else {`)
-			p.P(`v := &`, msgname, `{}`)
+			if p.ShouldPool(message) && p.ShouldPool(field.Message) {
+				p.P(`v := `, msgname, `FromVTPool()`)
+			} else {
+				p.P(`v := &`, msgname, `{}`)
+			}
 			p.decodeMessage("v", buf, field.Message)
 			p.P(`m.`, fieldname, ` = &`, field.GoIdent, `{v}`)
 			p.P(`}`)
@@ -614,9 +618,10 @@ func (p *unmarshal) fieldItem(field *protogen.Field, fieldname string, message *
 		p.P(`return `, p.Ident("io", `ErrUnexpectedEOF`))
 		p.P(`}`)
 		if oneof {
-			p.P(`v := make([]byte, postIndex-iNdEx)`)
-			p.P(`copy(v, dAtA[iNdEx:postIndex])`)
-			p.P(`m.`, fieldname, ` = &`, field.GoIdent, `{v}`)
+			bytesPoolName := `vtprotoPool_` + message.GoIdent.GoName + `_bytes`
+			p.P(`v := `, bytesPoolName, `.Get().(*[]byte)`)
+			p.P(`*v = append((*v)[:0], dAtA[iNdEx:postIndex]...)`)
+			p.P(`m.`, fieldname, ` = &`, field.GoIdent, `{*v}`)
 		} else if repeated {
 			p.P(`m.`, fieldname, ` = append(m.`, fieldname, `, make([]byte, postIndex-iNdEx))`)
 			p.P(`copy(m.`, fieldname, `[len(m.`, fieldname, `)-1], dAtA[iNdEx:postIndex])`)
