@@ -48,12 +48,26 @@ func (p *pool) message(message *protogen.Message) {
 	p.P(`},`)
 	p.P(`}`)
 
+	bytesPoolName := `vtprotoPool_` + ccTypeName.GoName + `_bytes`
+
+	p.P(`var `, bytesPoolName, ` = `, p.Ident("sync", "Pool"), `{`)
+	p.P(`New: func() interface{} {`)
+	p.P(`b := make([]byte, 0, 8)`)
+	p.P(`return &b`)
+	p.P(`},`)
+	p.P(`}`)
+
 	p.P(`func (m *`, ccTypeName, `) ResetVT() {`)
 	var saved []*protogen.Field
 	for _, field := range message.Fields {
 		fieldName := field.GoName
 
-		if field.Desc.IsList() {
+		oneof := field.Oneof != nil && !field.Oneof.Desc.IsSynthetic()
+		if oneof && p.ShouldPool(message) && p.ShouldPool(field.Message) {
+			p.P(`if oneof, ok := m.`, field.Oneof.GoName, `.(*`, field.GoIdent, `); ok {`)
+			p.P(`oneof.` + fieldName + `.ReturnToVTPool()`)
+			p.P(`}`)
+		} else if field.Desc.IsList() {
 			switch field.Desc.Kind() {
 			case protoreflect.MessageKind, protoreflect.GroupKind:
 				if p.ShouldPool(field.Message) {
@@ -71,8 +85,15 @@ func (p *pool) message(message *protogen.Message) {
 					p.P(`m.`, fieldName, `.ReturnToVTPool()`)
 				}
 			case protoreflect.BytesKind:
-				p.P(fmt.Sprintf("f%d", len(saved)), ` := m.`, fieldName, `[:0]`)
-				saved = append(saved, field)
+				if oneof {
+					p.P(`if oneof, ok := m.`, field.Oneof.GoName, `.(*`, field.GoIdent, `); ok {`)
+					p.P(fmt.Sprintf(`oneof.%s = oneof.%s[:0]`, field.GoName, field.GoName))
+					p.P(fmt.Sprintf(bytesPoolName+`.Put(&oneof.%s)`, field.GoName))
+					p.P(`}`)
+				} else {
+					p.P(fmt.Sprintf("f%d", len(saved)), ` := m.`, fieldName, `[:0]`)
+					saved = append(saved, field)
+				}
 			}
 		}
 	}
