@@ -7,11 +7,12 @@
 package pool
 
 import (
-	_ "github.com/planetscale/vtprotobuf/vtproto"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	_ "github.com/atercattus/vtprotobuf/vtproto"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

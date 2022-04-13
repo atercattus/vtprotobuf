@@ -10,7 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/planetscale/vtprotobuf/generator"
+	"github.com/atercattus/vtprotobuf/generator"
+
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -618,7 +619,7 @@ func (p *unmarshal) fieldItem(field *protogen.Field, fieldname string, message *
 		p.P(`return `, p.Ident("io", `ErrUnexpectedEOF`))
 		p.P(`}`)
 		if oneof {
-			bytesPoolName := `vtprotoPool_` + message.GoIdent.GoName + `_bytes`
+			bytesPoolName := generator.GetByteSlice().GetBytesPoolName(message.GoIdent)
 			p.P(`v := `, bytesPoolName, `.Get().(*[]byte)`)
 			p.P(`*v = append((*v)[:0], dAtA[iNdEx:postIndex]...)`)
 			p.P(`m.`, fieldname, ` = &`, field.GoIdent, `{*v}`)

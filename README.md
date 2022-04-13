@@ -37,7 +37,7 @@ The following features can be generated:
 1. Install `protoc-gen-go-vtproto`:
 
 ```
-go install github.com/planetscale/vtprotobuf/cmd/protoc-gen-go-vtproto@latest
+go install github.com/atercattus/vtprotobuf/cmd/protoc-gen-go-vtproto@latest
 ```
 
 2. Ensure your project is already using the ProtoBuf v2 API (i.e. `google.golang.org/protobuf`). The `vtprotobuf` compiler is not compatible with APIv1 generated code.
@@ -69,13 +69,13 @@ The `protoc-gen-go-vtproto` compiler does not overwrite any of the default marsh
 
 ### `vtprotobuf` with GRPC
 
-To use `vtprotobuf` with the new versions of GRPC, you need to register the codec provided by the `github.com/planetscale/vtprotobuf/codec/grpc` package.
+To use `vtprotobuf` with the new versions of GRPC, you need to register the codec provided by the `github.com/atercattus/vtprotobuf/codec/grpc` package.
 
 ```go
 package servenv
 
 import (
-    "github.com/planetscale/vtprotobuf/codec/grpc"
+    "github.com/atercattus/vtprotobuf/codec/grpc"
 	"google.golang.org/grpc/encoding"
 	_ "google.golang.org/grpc/encoding/proto"
 )
@@ -107,11 +107,11 @@ done; \
 
 ### DRPC
 
-To use `vtprotobuf` as a DRPC encoding, simply pass `github.com/planetscale/vtprotobuf/codec/drpc` as the `protolib` flag in your `protoc-gen-go-drpc` invocation.
+To use `vtprotobuf` as a DRPC encoding, simply pass `github.com/atercattus/vtprotobuf/codec/drpc` as the `protolib` flag in your `protoc-gen-go-drpc` invocation.
 
 Example:
 
 ```
-protoc --go_out=. --go-vtproto_out=. --go-drpc_out=. --go-drpc_opt=protolib=github.com/planetscale/vtprotobuf/codec/drpc
+protoc --go_out=. --go-vtproto_out=. --go-drpc_out=. --go-drpc_opt=protolib=github.com/atercattus/vtprotobuf/codec/drpc
 ```
 

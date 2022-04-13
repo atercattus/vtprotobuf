@@ -90,5 +90,7 @@ func (gen *Generator) GenerateFile(gf *protogen.GeneratedFile, file *protogen.Fi
 		}
 	}
 
+	GetByteSlice().GenerateCode(file.GoImportPath, p)
+
 	return generated
 }
