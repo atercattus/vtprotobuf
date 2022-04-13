@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
+	sync "sync"
 )
 
 const (
@@ -850,9 +851,9 @@ func (m *ConformanceRequest) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := make([]byte, postIndex-iNdEx)
-			copy(v, dAtA[iNdEx:postIndex])
-			m.Payload = &ConformanceRequest_ProtobufPayload{v}
+			v := vtprotoPool_ConformanceRequest_bytes.Get().(*[]byte)
+			*v = append((*v)[:0], dAtA[iNdEx:postIndex]...)
+			m.Payload = &ConformanceRequest_ProtobufPayload{*v}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1220,9 +1221,9 @@ func (m *ConformanceResponse) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := make([]byte, postIndex-iNdEx)
-			copy(v, dAtA[iNdEx:postIndex])
-			m.Result = &ConformanceResponse_ProtobufPayload{v}
+			v := vtprotoPool_ConformanceResponse_bytes.Get().(*[]byte)
+			*v = append((*v)[:0], dAtA[iNdEx:postIndex]...)
+			m.Result = &ConformanceResponse_ProtobufPayload{*v}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -1476,4 +1477,18 @@ func (m *JspbEncodingConfig) UnmarshalVT(dAtA []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 	return nil
+}
+
+var vtprotoPool_ConformanceRequest_bytes = sync.Pool{
+	New: func() interface{} {
+		b := make([]byte, 0, 8)
+		return &b
+	},
+}
+
+var vtprotoPool_ConformanceResponse_bytes = sync.Pool{
+	New: func() interface{} {
+		b := make([]byte, 0, 8)
+		return &b
+	},
 }
