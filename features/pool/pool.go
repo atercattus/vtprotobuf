@@ -3,7 +3,8 @@ package pool
 import (
 	"fmt"
 
-	"github.com/planetscale/vtprotobuf/generator"
+	"github.com/atercattus/vtprotobuf/generator"
+
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )

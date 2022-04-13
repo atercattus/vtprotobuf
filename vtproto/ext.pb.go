@@ -2,15 +2,16 @@
 // versions:
 // 	protoc-gen-go v1.26.0
 // 	protoc        v3.16.0
-// source: github.com/planetscale/vtprotobuf/vtproto/ext.proto
+// source: github.com/atercattus/vtprotobuf/vtproto/ext.proto
 
 package vtproto
 
 import (
+	reflect "reflect"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
-	reflect "reflect"
 )
 
 const (
@@ -27,7 +28,7 @@ var file_github_com_planetscale_vtprotobuf_vtproto_ext_proto_extTypes = []protoi
 		Field:         64101,
 		Name:          "vtproto.mempool",
 		Tag:           "varint,64101,opt,name=mempool",
-		Filename:      "github.com/planetscale/vtprotobuf/vtproto/ext.proto",
+		Filename:      "github.com/atercattus/vtprotobuf/vtproto/ext.proto",
 	},
 }
 
