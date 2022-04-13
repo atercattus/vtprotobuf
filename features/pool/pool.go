@@ -49,15 +49,6 @@ func (p *pool) message(message *protogen.Message) {
 	p.P(`},`)
 	p.P(`}`)
 
-	bytesPoolName := `vtprotoPool_` + ccTypeName.GoName + `_bytes`
-
-	p.P(`var `, bytesPoolName, ` = `, p.Ident("sync", "Pool"), `{`)
-	p.P(`New: func() interface{} {`)
-	p.P(`b := make([]byte, 0, 8)`)
-	p.P(`return &b`)
-	p.P(`},`)
-	p.P(`}`)
-
 	p.P(`func (m *`, ccTypeName, `) ResetVT() {`)
 	var saved []*protogen.Field
 	for _, field := range message.Fields {
@@ -87,6 +78,8 @@ func (p *pool) message(message *protogen.Message) {
 				}
 			case protoreflect.BytesKind:
 				if oneof {
+					bytesPoolName := generator.GetByteSlice().GetBytesPoolName(message.GoIdent)
+
 					p.P(`if oneof, ok := m.`, field.Oneof.GoName, `.(*`, field.GoIdent, `); ok {`)
 					p.P(fmt.Sprintf(`oneof.%s = oneof.%s[:0]`, field.GoName, field.GoName))
 					p.P(fmt.Sprintf(bytesPoolName+`.Put(&oneof.%s)`, field.GoName))
